@@ -1,10 +1,10 @@
 import chromadb
-from services.embedder import model as embed_model, embed_chunks, embed_query
+from services.embedder import embed_chunks, embed_query
 import uuid
 
 chroma_client = chromadb.Client()
-chroma_client = chromadb.PersistentClient(path="./tmp/chromadb")
-collection = chroma_client.get_or_create_collection(name="ai_tutor")
+chroma_client = chromadb.PersistentClient(path="./tmp/chromad")
+collection = chroma_client.get_or_create_collection(name="ai_tutor", metadata={"dimension": 768})
 
 
 def store_chunks(raw_chunks):
@@ -16,6 +16,7 @@ def store_chunks(raw_chunks):
     embeddings = embed_chunks(texts)
     if isinstance(embeddings[0], float):
         embeddings = [embeddings] 
+    print("Done 4")
 
     ids = [str(uuid.uuid4()) for _ in texts]
     try:
