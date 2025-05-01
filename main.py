@@ -20,7 +20,7 @@ class AskInput(BaseModel):
 chat_sessions: Dict[str, List[Dict]] = {}
 
 app = FastAPI()
-UPLOAD_DIR = "uploads"
+UPLOAD_DIR = "/temp/uploads"
 os.makedirs(UPLOAD_DIR, exist_ok=True)
 
 
