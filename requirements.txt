@@ -2,3 +2,5 @@ chromadb
 fastapi
 tokenizers
 openai
+openai-whisper
+pydantic
