@@ -54,41 +54,6 @@ async def upload_material(
         "chunks": len(chunks),
         "text": text
     }
-@app.post("/api/upload")
- async def upload_material(
-     file: UploadFile = File(...),
-     user: UserOutput = Depends(get_current_user)
- ):
-     if user.role != "admin":
-         # return RedirectResponse(url="http://localhost:3000/question-answer")
-         return {
-             "msg": 'kindly login'
-         }
- 
-     # Save file
-     filepath = os.path.join(UPLOAD_DIR, file.filename)
-     with open(filepath, "wb") as f:
-         shutil.copyfileobj(file.file, f)
- 
-     # Detect file type via MIME or extension
-     content_type = file.content_type  # e.g., "application/pdf" or "audio/mpeg"
-     filename = file.filename.lower()
- 
-     if "audio" in content_type or filename.endswith((".mp3", ".wav", ".mp4")):
-         text = transcribe_audio(filepath)
-     elif content_type == "application/pdf" or filename.endswith(".pdf"):
-         text = extract_pdf_text(filepath)
-     else:
-         raise HTTPException(status_code=400, detail="Unsupported file type")
- 
-     chunks = chunk_text(text)
-     store_chunks(chunks)
- 
-     return {
-         "message": "Material processed and stored",
-         "chunks": len(chunks),
-         "text": text
-     }
 
 
 @app.post("/api/ask")
