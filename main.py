@@ -32,10 +32,12 @@ async def upload_material(
     filepath = os.path.join(UPLOAD_DIR, file.filename)
     with open(filepath, "wb") as f:
         shutil.copyfileobj(file.file, f)
+    print("Done 1")
 
     # Detect file type via MIME or extension
     content_type = file.content_type  # e.g ., "application/pdf" or "audio/mpeg"
     filename = file.filename.lower()
+    print("Done 2")
 
     if "audio" in content_type or filename.endswith((".mp3", ".wav", ".mp4")):
         text = transcribe_audio(filepath)
@@ -45,6 +47,7 @@ async def upload_material(
         text = extract_ppt_text(filepath)
     else:
         raise HTTPException(status_code=400, detail="Unsupported file type")
+    print("uploaded")
 
     chunks = chunk_text(text)
     store_chunks(chunks)

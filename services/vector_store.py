@@ -3,8 +3,9 @@ from services.embedder import model as embed_model, embed_chunks, embed_query
 import uuid
 
 chroma_client = chromadb.Client()
-chroma_client = chromadb.PersistentClient(path="./chromadb")
+chroma_client = chromadb.PersistentClient(path="./tmp/chromadb")
 collection = chroma_client.get_or_create_collection(name="ai_tutor")
+
 
 def store_chunks(raw_chunks):
     texts = [chunk.strip() for chunk in raw_chunks if isinstance(chunk, str) and chunk.strip()]
