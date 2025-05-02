@@ -11,9 +11,6 @@ from dotenv import load_dotenv
 load_dotenv()
 
 client = InferenceClient( provider="hf-inference", api_key=os.getenv("HF_API_KEY"))
-
-
-
 def transcribe_audio(filepath: str) -> str:
     """
     Uses HF InferenceClient with openai/whisper-large-v3.
