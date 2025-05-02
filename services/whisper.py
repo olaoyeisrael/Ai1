@@ -10,9 +10,7 @@ import os
 from dotenv import load_dotenv
 load_dotenv()
 
-api=os.getenv('Hf_API_KEY')
-
-client = InferenceClient( provider="hf-inference", api_key=api)
+client = InferenceClient( provider="hf-inference", api_key=os.getenv("HF_API_KEY"))
 
 
 

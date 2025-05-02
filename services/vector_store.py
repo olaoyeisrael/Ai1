@@ -3,7 +3,7 @@ from services.embedder import embed_chunks, embed_query
 import uuid
 
 chroma_client = chromadb.Client()
-chroma_client = chromadb.PersistentClient(path="./tmp/chromad")
+chroma_client = chromadb.PersistentClient(path="./tmp/chromaDB")
 collection = chroma_client.get_or_create_collection(name="ai_tutor", metadata={"dimension": 768})
 
 
