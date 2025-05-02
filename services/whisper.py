@@ -8,11 +8,11 @@
 from huggingface_hub import InferenceClient
 import os
 from dotenv import load_dotenv
-load_dotenv
+load_dotenv()
 
 api=os.getenv('Hf_API_KEY')
 
-client = InferenceClient( provider="hf-inference", api_key=api)
+client = InferenceClient( provider="hf-inference", api_key="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")
 
 
 
@@ -26,7 +26,7 @@ def transcribe_audio(filepath: str) -> str:
             audio_bytes = f.read()  # ✅ this is required
 
         response = client.automatic_speech_recognition(
-            filepath,
+            audio_bytes,
             model="openai/whisper-large-v3-turbo"
         )
         return response["text"]
