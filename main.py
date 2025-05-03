@@ -13,6 +13,8 @@ import os
 import shutil
 from typing import Dict, List
 from pydantic import BaseModel
+from fastapi.middleware.cors import CORSMiddleware
+
 
 class AskInput(BaseModel):
     question: str
@@ -21,6 +23,13 @@ chat_sessions: Dict[str, List[Dict]] = {}
 
 app = FastAPI()
 
+app.add_middleware(
+    CORSMiddleware,
+    allow_origins=["*"],  # Change "*" to your frontend URL in production
+    allow_credentials=True,
+    allow_methods=["*"],
+    allow_headers=["*"],
+)
 
 @app.post("/api/upload")
 async def upload_material(file: UploadFile = File(...)):
