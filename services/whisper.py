@@ -9,6 +9,7 @@ from huggingface_hub import InferenceClient
 import os
 from dotenv import load_dotenv
 load_dotenv()
+import mimetypes
 
 client = InferenceClient( provider="hf-inference", api_key=os.getenv("HF_API_KEY"))
 def transcribe_audio(filepath: str) -> str:
@@ -17,12 +18,16 @@ def transcribe_audio(filepath: str) -> str:
     Passes binary bytes to avoid 502 and input errors.
     """
     try:
+        mime_type, _ = mimetypes.guess_type(filepath)
+        if not mime_type:
+            mime_type = "audio/ogg"
         with open(filepath, "rb") as f:
             audio_bytes = f.read()  # ✅ this is required
 
         response = client.automatic_speech_recognition(
             audio_bytes,
-            model="openai/whisper-large-v3-turbo"
+            model="openai/whisper-large-v3-turbo",
+            content_type=mime_type
         )
         return response["text"]
     except Exception as e:
