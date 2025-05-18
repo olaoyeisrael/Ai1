@@ -11,7 +11,7 @@ router = APIRouter()
 
 @router.post("/upload")
 async def upload_material(file: UploadFile = File(...), user: dict = Depends(decode_jwt)):
-    if user["role"] != 'admin':
+    if user.role != 'admin':
         raise HTTPException(status_code=403, detail="Admins only")
     try:
         UPLOAD_DIR = "/tmp/uploads"
