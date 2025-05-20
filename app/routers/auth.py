@@ -128,6 +128,7 @@ def verify_otp(email: str = Body(...), otp: str = Body(...)):
 
     if user.get("otp_code") != otp:
         raise HTTPException(status_code=400, detail="Invalid OTP")
+    print(email)
 
     if datetime.utcnow() > user.get("otp_expires_at", datetime.utcnow()):
         users.update_one({"email": email}, {"$unset": {"otp_code": "", "otp_expires_at": ""}})
