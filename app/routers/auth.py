@@ -120,7 +120,7 @@ def login(email: str = Body(...), password: str = Body(...)):
 
 
 
-@router.post("/verify-otp")
+@router.post("/api/verify")
 def verify_otp(email: str = Body(...), otp: str = Body(...)):
     user = users.find_one({"email": email})
     if not user:
