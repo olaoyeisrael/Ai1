@@ -145,7 +145,7 @@ def verify_otp(email: str = Body(...), otp: str = Body(...)):
     payload = {
         "sub": str(user["_id"]),
         "email": user["email"],
-        "role": user["role"],
+        "student_id": user["role"],
         "exp": int(expires_at.timestamp())
         
      }
@@ -158,3 +158,28 @@ def verify_otp(email: str = Body(...), otp: str = Body(...)):
         "email": email,
         "role": user.get("role", "trial")
      }
+
+# from pydantic import BaseModel, EmailStr
+# from fastapi import Header, HTTPException, Depends
+
+# class UserOutput(BaseModel):
+#     id: str                   # User ID (e.g., from MongoDB _id or JWT sub)
+#     email: EmailStr           # Email address
+#     role: str                 # Role: "student", "trial", or "admin"
+#     trial_ends_at: datetime 
+
+# def get_token_from_header(authorization: str = Header(...)):
+#     if not authorization.startswith("Bearer "):
+#         raise HTTPException(status_code=401, detail="Invalid Authorization header")
+#     return authorization.split(" ")[1]
+
+# import os
+# from dotenv import load_dotenv
+# load_dotenv()
+# JWT_SECRET = os.getenv("JWT_SECRET")
+# JWT_ALGORITHM = os.getenv("JWT_ALGORITHM")
+# @router.post("/api/decode")
+# def decodeToken(token: str = Body(..., embed=True)):
+#     payload = jwt.decode(token, JWT_SECRET, algorithms=[JWT_ALGORITHM])
+#     return {"payload" : payload}
+    
