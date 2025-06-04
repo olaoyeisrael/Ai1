@@ -24,15 +24,24 @@ def register(email: str = Body(...), password: str = Body(...)):
     hashed_pw = bcrypt.hash(password)
     trial_ends = datetime.utcnow() + timedelta(days=7)
 
+    otp = str(random.randint(100000, 999999))
+    expires = datetime.now(timezone.utc) + timedelta(minutes=10)
+
     users.insert_one({
         "email": email,
         "hashed_password": hashed_pw,
         "trial_ends_at": trial_ends,
         "created_at": datetime.utcnow(),
-        "role": "trial"
+        "role": "trial",
+        "otp_code": otp,
+        "otp_expires_at": expires
     })
+    body = f"<p>Your OTP code is <strong>{otp}</strong>. It expires in 10 minutes.</p>"
+    send_email(email, "Welcome to Lextorah AI Tutor – Verify Your Email", body)
 
-    return {"message": "Account created. Please log in."}
+    return {"message": "Account created. OTP sent. Please verify to complete registration."}
+
+    # return {"message": "Account created. Please log in."}
 
 # @router.post("/freetrial/register")
 # def register(email: str = Body(...), password: str = Body(...)):
@@ -91,8 +100,8 @@ def login(email: str = Body(...), password: str = Body(...)):
     if not user or not bcrypt.verify(password, user["hashed_password"]):
         raise HTTPException(status_code=401, detail="Invalid credentials")
     
-    if datetime.utcnow() > user["trial_ends_at"]:
-        raise HTTPException(status_code=403, detail="Trial expired")
+    # if datetime.utcnow() > user["trial_ends_at"]:
+    #     raise HTTPException(status_code=403, detail="Trial expired")
     
     # Generate OTP
     otp = str(random.randint(100000, 999999))
