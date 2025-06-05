@@ -151,12 +151,13 @@ def verify_otp(email: str = Body(...), otp: str = Body(...)):
     
     # ✅ Return JWT token + trial info
     expires_at = datetime.now(timezone.utc) + timedelta(seconds=3600)
+    trial_ends_at = user.get("trial_ends_at")
     payload = {
         "sub": str(user["_id"]),
         "email": user["email"],
         "student_id": user["role"],
-        "exp": int(expires_at.timestamp())
-        
+        "exp": int(expires_at.timestamp()),
+        "trial_ends_at": int(trial_ends_at.timestamp())   
      }
     token = jwt.encode(payload, JWT_SECRET, algorithm=JWT_ALGORITHM)
 
@@ -165,7 +166,7 @@ def verify_otp(email: str = Body(...), otp: str = Body(...)):
         "token": token,
         "trial_ends_at": user["trial_ends_at"].isoformat(),
         "email": email,
-        "role": user.get("role", "trial")
+        "role": user.get("role", "trial"),
      }
 
 # from pydantic import BaseModel, EmailStr

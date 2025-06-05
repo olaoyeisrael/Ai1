@@ -11,11 +11,13 @@ from app.utils.mongo import users
 from pydantic import BaseModel, EmailStr
 from datetime import datetime
 
+from bson import ObjectId
+
 class UserOutput(BaseModel):
     id: str                   # User ID (e.g., from MongoDB _id or JWT sub)
     email: EmailStr           # Email address
     role: str                 # Role: "student", "trial", or "admin"
-    trial_ends_at: datetime 
+    trial_ends_at: Optional[datetime] = None
 
 def get_token_from_header(authorization: str = Header(...)):
     if not authorization.startswith("Bearer "):
@@ -28,7 +30,29 @@ JWT_ALGORITHM = os.getenv("JWT_ALGORITHM")
 def decode_jwt(token: str = Depends(get_token_from_header)):
     try:
         payload = jwt.decode(token, JWT_SECRET, algorithms=[JWT_ALGORITHM])
-        role = 'admin' if payload.get("student_id", "").lower() == "admin" else 'student'
+        # role = 'admin' if payload.get("student_id", "").lower() == "admin" else 'student'
+        # trial_ends_at = None
+        # if payload.get("role") == "trial" and "trial_ends_at" in payload:
+        #     trial_ends_at = datetime.utcfromtimestamp(payload["trial_ends_at"])
+
+        student_id = payload.get("student_id", "").lower()
+
+        # Determine actual role
+        if student_id == "admin":
+            role = "admin"
+        elif student_id == "trial":
+            role = "trial"
+        else:
+            role = "student"
+
+      
+        if "trial_ends_at" in payload:
+            trial_ends_at = datetime.utcfromtimestamp(payload["trial_ends_at"])
+        else:
+            trial_ends_at = None
+
+
+
 
         # return {
         #     "user_id": payload.get("id"),
@@ -39,7 +63,7 @@ def decode_jwt(token: str = Depends(get_token_from_header)):
             id=payload.get("sub"),
             email=payload.get("email"),
             role=role,
-            trial_ends_at=datetime.utcfromtimestamp(payload["exp"])
+            trial_ends_at=trial_ends_at
         )
     
     except ExpiredSignatureError:

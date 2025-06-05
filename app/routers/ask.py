@@ -55,9 +55,11 @@ async def ask_question(
     # ✅ Ensure only students and trial users can proceed
     if user.role not in ["student", "trial"]:
         raise HTTPException(status_code=403, detail="Only students and trial users can access.")
-
+    
+    # if datetime.utcnow() > user["trial_ends_at"]:
+    #     raise HTTPException(status_code=403, detail="Trial expired")
     # ✅ Check if trial has expired
-    if user.role == "trial" and datetime.utcnow().timestamp() > user.trial_ends_at.timestamp():
+    if user.role == "trial" and user.trial_ends_at and datetime.utcnow() > user.trial_ends_at:
         raise HTTPException(status_code=403, detail="Free trial expired.")
 
     user_id = str(user.id)
@@ -77,8 +79,11 @@ async def ask_question(
         context,
         chat_sessions[user_id]
     )
+   
 
     chat_sessions[user_id] = updated_history
+    print(user.role)
+    print(user.trial_ends_at)
 
     return {
         "question": question.question,
