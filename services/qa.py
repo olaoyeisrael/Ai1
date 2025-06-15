@@ -48,4 +48,4 @@ def answer_question(user_message: str,context: str, chat_history: list) -> tuple
         return assistant_message, chat_history
 
     except Exception as e:
-        return f"❌ Error: {e}", chat_history
+        return f"Error: {e}", chat_history

@@ -30,10 +30,7 @@ JWT_ALGORITHM = os.getenv("JWT_ALGORITHM")
 def decode_jwt(token: str = Depends(get_token_from_header)):
     try:
         payload = jwt.decode(token, JWT_SECRET, algorithms=[JWT_ALGORITHM])
-        # role = 'admin' if payload.get("student_id", "").lower() == "admin" else 'student'
-        # trial_ends_at = None
-        # if payload.get("role") == "trial" and "trial_ends_at" in payload:
-        #     trial_ends_at = datetime.utcfromtimestamp(payload["trial_ends_at"])
+       
 
         student_id = payload.get("student_id", "").lower()
 
@@ -54,11 +51,6 @@ def decode_jwt(token: str = Depends(get_token_from_header)):
 
 
 
-        # return {
-        #     "user_id": payload.get("id"),
-        #     "role": role,
-        #     "student_id": payload.get("student_id")
-        # }
         return UserOutput(
             id=payload.get("sub"),
             email=payload.get("email"),
@@ -67,10 +59,6 @@ def decode_jwt(token: str = Depends(get_token_from_header)):
         )
     
     except ExpiredSignatureError:
-        # decoded = jwt.decode(token, JWT_SECRET, algorithms=[JWT_ALGORITHM], options={"verify_exp": False})
-        # email = decoded.get("email")
-        # if email:
-        #     users.update_one({"email": email}, {"$set": {"is_verified": False}})
         raise HTTPException(status_code=401, detail="Token expired. Please verify OTP again.")
     except JWTError:
         raise HTTPException(status_code=401, detail="Invalid token")

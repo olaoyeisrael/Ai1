@@ -18,6 +18,7 @@ JWT_ALGORITHM = os.getenv("JWT_ALGORITHM")
 
 @router.post("/freetrial/register")
 def register(email: str = Body(...), password: str = Body(...)):
+    
     if users.find_one({"email": email}):
         raise HTTPException(status_code=400, detail="Email already exists")
 
@@ -41,56 +42,7 @@ def register(email: str = Body(...), password: str = Body(...)):
 
     return {"message": "Account created. OTP sent. Please verify to complete registration."}
 
-    # return {"message": "Account created. Please log in."}
-
-# @router.post("/freetrial/register")
-# def register(email: str = Body(...), password: str = Body(...)):
-#     if users.find_one({"email": email}):
-#         raise HTTPException(status_code=400, detail="Email already exists")
-
-#     hashed_pw = bcrypt.hash(password)
-#     trial_ends = datetime.utcnow() + timedelta(days=7)
-#     otp = str(random.randint(100000, 999999))
-#     expires = datetime.utcnow() + timedelta(minutes=10)
-
-#     users.insert_one({
-#         "email": email,
-#         "hashed_password": hashed_pw,
-#         "trial_ends_at": trial_ends,
-#         "created_at": datetime.utcnow(),
-#         "role": "trial",
-#         "otp_code": otp,
-#         "otp_expires_at": expires
-#     })
-
-#     body = f"<p>Welcome to AI Tutor!<br>Your OTP code is <strong>{otp}</strong>. It expires in 10 minutes.</p>"
-#     send_email(email, "Verify Your Email for AI Tutor Access", body)
-
-#     return {
-#         "message": "Account created. OTP sent to email. Please verify before logging in."
-#     }
-
-
-# @router.post("/freetrial/login")
-# def login(email: str = Body(...), password: str = Body(...)):
-#     user = users.find_one({"email": email})
-#     if not user or not bcrypt.verify(password, user["hashed_password"]):
-#         raise HTTPException(status_code=401, detail="Invalid credentials")
-
-#     payload = {
-#         "sub": str(user["_id"]),
-#         "email": user["email"],
-#         "role": user["role"],
-#         "exp": int(user["trial_ends_at"].timestamp())
-#     }
-
-#     token = jwt.encode(payload, JWT_SECRET, algorithm=JWT_ALGORITHM)
-
-#     return {
-#         "token": token,
-#         "trial_ends_at": user["trial_ends_at"].isoformat()
-#     }
-
+ 
 
 @router.post("/freetrial/login")
 def login(email: str = Body(...), password: str = Body(...)):
@@ -99,9 +51,6 @@ def login(email: str = Body(...), password: str = Body(...)):
     
     if not user or not bcrypt.verify(password, user["hashed_password"]):
         raise HTTPException(status_code=401, detail="Invalid credentials")
-    
-    # if datetime.utcnow() > user["trial_ends_at"]:
-    #     raise HTTPException(status_code=403, detail="Trial expired")
     
     # Generate OTP
     otp = str(random.randint(100000, 999999))
@@ -169,27 +118,5 @@ def verify_otp(email: str = Body(...), otp: str = Body(...)):
         "role": user.get("role", "trial"),
      }
 
-# from pydantic import BaseModel, EmailStr
-# from fastapi import Header, HTTPException, Depends
 
-# class UserOutput(BaseModel):
-#     id: str                   # User ID (e.g., from MongoDB _id or JWT sub)
-#     email: EmailStr           # Email address
-#     role: str                 # Role: "student", "trial", or "admin"
-#     trial_ends_at: datetime 
-
-# def get_token_from_header(authorization: str = Header(...)):
-#     if not authorization.startswith("Bearer "):
-#         raise HTTPException(status_code=401, detail="Invalid Authorization header")
-#     return authorization.split(" ")[1]
-
-# import os
-# from dotenv import load_dotenv
-# load_dotenv()
-# JWT_SECRET = os.getenv("JWT_SECRET")
-# JWT_ALGORITHM = os.getenv("JWT_ALGORITHM")
-# @router.post("/api/decode")
-# def decodeToken(token: str = Body(..., embed=True)):
-#     payload = jwt.decode(token, JWT_SECRET, algorithms=[JWT_ALGORITHM])
-#     return {"payload" : payload}
     

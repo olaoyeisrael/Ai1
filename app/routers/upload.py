@@ -51,5 +51,5 @@ async def upload_material(file: UploadFile = File(...), user: dict = Depends(dec
         }
 
     except Exception as e:
-        print("❌ Upload crashed:", e)
+        print("Upload crashed:", e)
         raise HTTPException(status_code=500, detail="Internal server error during upload")
