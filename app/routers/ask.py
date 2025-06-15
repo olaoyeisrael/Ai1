@@ -71,7 +71,7 @@ async def ask_question(
         ]
 
     # ✅ Retrieve top chunks and generate answer
-    top_chunks = search_chunks(question.question, top_k=3, threshold=0.75)
+    top_chunks = search_chunks(question.question, top_k=4, threshold=0.5)
     context = "\n\n".join([chunk['text'] for chunk in top_chunks])
 
     answer, updated_history = answer_question(
