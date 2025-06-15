@@ -34,7 +34,7 @@ TOGETHER_API_KEY = os.getenv("TOGETHER_API_KEY")
 
 # Together AI endpoint and model
 TOGETHER_API_URL = "https://api.together.xyz/v1/embeddings"
-TOGETHER_MODEL = "togethercomputer/m2-bert-80M-2k-retrieval"  # or replace with your preferred model
+TOGETHER_MODEL = "togethercomputer/m2-bert-80M-32k-retrieval"  # or replace with your preferred model
 
 
 def embed_chunks(texts: list[str]) -> list[list[float]]:
